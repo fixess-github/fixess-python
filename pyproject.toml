@@ -22,7 +22,7 @@ classifiers = [
 ]
 [project]
 name = "fixess"
-version = "0.0.1"
+version = "0.0.2"
 keywords = [
     "cloud AI",
     "cloud database",

@@ -2,8 +2,18 @@ import time
 import requests
 
 class Fixess():
-  def __init__(self, api_key):
-    self._api_key = api_key
+  def __init__(self, api_key, server_url=None, headers=None):
+    if server_url:
+      self._server_url = server_url
+    else:
+      self._server_url = 'https://fixess.p.rapidapi.com'
+    if headers:
+      self._headers = headers 
+    else:
+      self._headers = {
+        'x-rapidapi-host': "fixess.p.rapidapi.com",
+        'x-rapidapi-key': api_key
+      }
 
   def keys(self):
     return self._post(cmd='keys')
@@ -81,14 +91,10 @@ class Fixess():
     args = {
       'cmd': cmd
     }
-    headers = {
-        'x-rapidapi-host': "fixess.p.rapidapi.com",
-        'x-rapidapi-key': self._api_key
-    }
     for key, value in kwargs.items():
       args[key] = value
-    response = requests.post('https://fixess.p.rapidapi.com',
+    response = requests.post(self._server_url,
                              json=args,
-                             headers=headers)
+                             headers=self._headers)
     response.raise_for_status()
     return response.json()
