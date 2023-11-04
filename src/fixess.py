@@ -55,18 +55,30 @@ class Fixess():
   def get_training_status(self):
     return self._post(cmd='get_training_status')
 
-  def clear(self, fit=True):
-    if fit:
-      remaining_training_time = 1
-      while remaining_training_time > 0:
-        training_status = self.get_training_status()
-        print(training_status)
-        remaining_training_time = training_status.get('time_left', 0)
-        exception = training_status.get('exception', None)
-        if exception:
-          print(exception)
-          assert False, exception
-        time.sleep(remaining_training_time)
+  def learn(self, timeout=None):
+    if timeout:
+      end_time = time.time() + timeout
+    else:
+      end_time = None
+    remaining_training_time = 1
+    while remaining_training_time > 0:
+      training_status = self.get_training_status()
+      print(training_status)
+      remaining_training_time = training_status.get('time_left', 0)
+      if end_time:
+        time_left = end_time - time.time()
+        if remaining_training_time > 0 and time_left <= 0:
+          return False
+        remaining_training_time = min(remaining_training_time,
+                                      time_left)
+      exception = training_status.get('exception', None)
+      if exception:
+        print(exception)
+        assert False, exception
+      time.sleep(remaining_training_time)
+    return True
+
+  def clear(self):
     result = self._post(cmd='clear',
                         fit=False)
     print(self._post(cmd='__str__'))
