@@ -78,9 +78,9 @@ class Fixess():
       time.sleep(remaining_training_time)
     return True
 
-  def clear(self):
+  def clear(self, meta=False):
     result = self._post(cmd='clear',
-                        fit=False)
+                        meta=False)
     print(self._post(cmd='__str__'))
     assert isinstance(len(self), int), len(self)
     assert len(self) == 0, self.keys()
