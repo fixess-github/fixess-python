@@ -2,7 +2,7 @@ import time
 import requests
 
 class Fixess():
-  def __init__(self, api_key, server_url=None, headers=None):
+  def __init__(self, api_key, server_url=None, headers=None, config=None):
     if server_url:
       self._server_url = server_url
     else:
@@ -14,6 +14,10 @@ class Fixess():
         'x-rapidapi-host': "fixess.p.rapidapi.com",
         'x-rapidapi-key': api_key
       }
+    self._config = config
+
+  def config(self, config):
+    self._config = config
 
   def keys(self):
     return self._post(cmd='keys')
@@ -101,7 +105,8 @@ class Fixess():
   def _post(self, cmd, **kwargs):
     assert isinstance(cmd, str), cmd
     args = {
-      'cmd': cmd
+      'cmd': cmd,
+      'config': self._config
     }
     for key, value in kwargs.items():
       args[key] = value
